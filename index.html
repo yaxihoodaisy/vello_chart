@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Chart Viewer</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src="data.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="layout-wrapper" style="display: none;">
+            <div id="controls" class="controls-container">
+                <div class="control-section">
+                    <h3>Dataset</h3>
+                    <div id="datasetButtons" class="button-group">
+                        <button id="defaultDatasetButton" class="active">Loading...</button>
+                    </div>
+                </div>
+                
+                <div class="control-section">
+                    <h3>Threading</h3>
+                    <div id="threadingButtons" class="button-group">
+                        <button class="active" onclick="selectThreading('ST')">Single-Threaded</button>
+                        <button onclick="selectThreading('MT')">Multi-Threaded</button>
+                    </div>
+                </div>
+                
+                <div class="control-section">
+                    <h3>Select Test</h3>
+                    <div id="testButtons" class="button-group"></div>
+                </div>
+                
+                <div class="control-section">
+                    <h3>Select Style</h3>
+                    <div id="styleButtons" class="button-group"></div>
+                </div>
+                
+                <div class="control-section">
+                    <h3>Metric</h3>
+                    <div id="metricButtons" class="button-group">
+                        <button class="active" onclick="selectMetric('time')">Time</button>
+                        <button onclick="selectMetric('rcpms')">Render Calls</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="chartContainer" class="chart-container">
+                <canvas id="performanceChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
