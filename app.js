@@ -6,7 +6,6 @@ let selectedMetric = 'time';
 let selectedThreading = 'ST';
 let currentProcessor = '';
 
-// Load default data on page load
 window.addEventListener('DOMContentLoaded', function() {
     loadDefaultData();
     setupEventListeners();
@@ -18,11 +17,11 @@ function setupEventListeners() {
 
 function loadDefaultData() {
     try {
-        // Check if DEFAULT_CHART_DATA exists (from data.js)
         if (typeof DEFAULT_CHART_DATA !== 'undefined') {
             chartData = DEFAULT_CHART_DATA;
             processData();
             updateProcessorDisplay();
+            updateTimestamp();
             document.querySelector('.layout-wrapper').style.display = 'flex';
         } else {
             console.error('Default data not found. Make sure data.js is loaded.');
@@ -39,6 +38,15 @@ function updateProcessorDisplay() {
         currentProcessor = chartData.cpu.brand || 'Unknown CPU';
         document.getElementById('defaultDatasetButton').textContent = currentProcessor;
         updateButtonStates('datasetButtons', currentProcessor);
+    }
+}
+
+function updateTimestamp() {
+    if (chartData && chartData.updated) {
+        const timestampElement = document.getElementById('updateTimestamp');
+        if (timestampElement) {
+            timestampElement.textContent = `Updated on: ${chartData.updated}`;
+        }
     }
 }
 
@@ -98,11 +106,9 @@ function updateTestAndStyleButtons() {
     const testSet = new Set();
     const styleSet = new Set();
     
-    // Store current selections
     const currentTest = selectedTest;
     const currentStyle = selectedStyle;
     
-    // Define the order based on Blend2D website
     const testOrder = [
         'FillRectA', 'FillRectU', 'FillRectRot', 'FillRoundU', 'FillRoundRot',
         'FillTriangle', 'FillPolyNZi10', 'FillPolyEOi10', 'FillPolyNZi20', 
@@ -116,11 +122,9 @@ function updateTestAndStyleButtons() {
     const styleOrder = ['Solid', 'Linear', 'Radial', 'Conic', 'Pattern'];
     
     chartData.runs.forEach((run, runIndex) => {
-        // Use the same filter logic as the chart
         if (selectedThreading === 'ST') {
             if (!run.name.includes(' ST') && run.name.match(/\s+\d+T/)) return;
         } else {
-            // Multi-threaded: only include runs with threading designations (ST, 2T, 4T, 8T, etc.)
             if (!run.name.match(/\s+(ST|\d+T)/)) return;
         }
         
@@ -130,25 +134,20 @@ function updateTestAndStyleButtons() {
         });
     });
     
-    // Sort tests according to predefined order
     testOrder.forEach(test => {
         if (testSet.has(test)) tests.push(test);
     });
-    // Add any remaining tests not in the order
     Array.from(testSet).forEach(test => {
         if (!tests.includes(test)) tests.push(test);
     });
     
-    // Sort styles according to predefined order
     styleOrder.forEach(style => {
         if (styleSet.has(style)) styles.push(style);
     });
-    // Add any remaining styles not in the order
     Array.from(styleSet).forEach(style => {
         if (!styles.includes(style)) styles.push(style);
     });
     
-    // Generate test buttons
     const testContainer = document.getElementById('testButtons');
     testContainer.innerHTML = '';
     tests.forEach(test => {
@@ -156,7 +155,6 @@ function updateTestAndStyleButtons() {
         testContainer.appendChild(button);
     });
     
-    // Generate style buttons
     const styleContainer = document.getElementById('styleButtons');
     styleContainer.innerHTML = '';
     styles.forEach(style => {
@@ -164,7 +162,6 @@ function updateTestAndStyleButtons() {
         styleContainer.appendChild(button);
     });
     
-    // Restore previous selections if they're still available, otherwise select first
     if (tests.includes(currentTest)) {
         selectTest(currentTest);
     } else if (tests.length > 0) {
@@ -179,7 +176,6 @@ function updateTestAndStyleButtons() {
 }
 
 function getRendererColor(runName) {
-    // Extract renderer name from run name
     const renderer = runName.split(' ')[0].toLowerCase();
     
     const colorMap = {
@@ -202,18 +198,14 @@ function updateChart() {
     const labels = [];
     const datasets = [];
     
-    // Filter runs based on threading selection
     const filteredRuns = chartData.runs.filter(run => {
         if (selectedThreading === 'ST') {
-            // Single-threaded: show runs with "ST" or no threading designation
             return run.name.includes(' ST') || !run.name.match(/\s+\d+T/);
         } else {
-            // Multi-threaded: show runs with threading designations (ST, 2T, 4T, 8T, etc.)
             return run.name.match(/\s+(ST|\d+T)/);
         }
     });
     
-    // Get data for each filtered run
     const runData = [];
     const runColors = [];
     filteredRuns.forEach(run => {
@@ -225,19 +217,15 @@ function updateChart() {
             labels.push(run.name);
             let data = record.rcpms;
             
-            // Convert based on selected metric
             if (selectedMetric === 'time') {
-                // Convert to time (ms for 1000 render calls)
                 data = data.map(rcpms => rcpms > 0 ? 1000 / rcpms : 0);
             }
-            // For 'rcpms', keep the original data
             
             runData.push(data);
             runColors.push(getRendererColor(run.name));
         }
     });
     
-    // Create datasets for each size
     sizes.forEach((size, sizeIndex) => {
         const data = runData.map(run => run[sizeIndex]);
         const backgroundColors = runColors;
@@ -286,25 +274,29 @@ function updateChart() {
                     display: true,
                     anchor: 'end',
                     align: 'right',
-                    formatter: function(value) {
+                    formatter: function(value, context) {
+                        const datasetLabel = context.dataset.label;
+                        let valueStr;
+                        
                         if (selectedMetric === 'time') {
                             if (value < 1) {
-                                return value.toFixed(2) + ' ms';
+                                valueStr = value.toFixed(2) + ' ms';
                             } else if (value < 10) {
-                                return value.toFixed(1) + ' ms';
+                                valueStr = value.toFixed(1) + ' ms';
                             } else {
-                                return Math.round(value) + ' ms';
+                                valueStr = Math.round(value) + ' ms';
                             }
                         } else {
-                            // For render calls per ms
                             if (value < 1) {
-                                return value.toFixed(2);
+                                valueStr = value.toFixed(2);
                             } else if (value < 10) {
-                                return value.toFixed(1);
+                                valueStr = value.toFixed(1);
                             } else {
-                                return Math.round(value).toString();
+                                valueStr = Math.round(value).toString();
                             }
                         }
+                        
+                        return `${valueStr} [${datasetLabel}]`;
                     },
                     color: 'white',
                     font: {
@@ -347,7 +339,9 @@ function updateChart() {
             layout: {
                 padding: {
                     left: 10,
-                    right: 60
+                    right: 70,
+                    top: 10,
+                    bottom: 10
                 }
             }
         }

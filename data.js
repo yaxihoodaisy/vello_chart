@@ -1,5 +1,6 @@
 const DEFAULT_CHART_DATA =
     {
+      "updated": "2025-08-01",
       "environment":{
         "os":"osx"
       },
