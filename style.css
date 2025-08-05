@@ -96,11 +96,13 @@ button.active:hover {
     padding: 15px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     height: 700px;
+    max-height: 700px;
     border: 1px solid #3a3a3a;
     flex: 1;
     min-width: 0;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 .chart-description {
@@ -128,6 +130,8 @@ button.active:hover {
 
 #performanceChart {
     width: 100% !important;
+    height: 100% !important;
+    max-height: calc(100% - 60px);
     flex: 1;
 }
 
@@ -162,5 +166,6 @@ button.active:hover {
     
     .chart-container {
         height: 500px;
+        max-height: 500px;
     }
 }

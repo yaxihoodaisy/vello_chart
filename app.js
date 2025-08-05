@@ -9,10 +9,33 @@ let currentProcessor = '';
 window.addEventListener('DOMContentLoaded', function() {
     loadDefaultData();
     setupEventListeners();
+    setupResizeObserver();
 });
 
 function setupEventListeners() {
     document.getElementById('defaultDatasetButton').addEventListener('click', loadDefaultData);
+}
+
+function setupResizeObserver() {
+    const chartContainer = document.getElementById('chartContainer');
+    if (!chartContainer) return;
+    
+    const resizeObserver = new ResizeObserver(entries => {
+        if (currentChart) {
+            currentChart.resize();
+        }
+    });
+    
+    resizeObserver.observe(chartContainer);
+    
+    // Also add window resize listener as fallback
+    window.addEventListener('resize', () => {
+        if (currentChart) {
+            setTimeout(() => {
+                currentChart.resize();
+            }, 100);
+        }
+    });
 }
 
 function loadDefaultData() {
