@@ -7,14 +7,9 @@ let selectedThreading = 'ST';
 let currentProcessor = '';
 
 window.addEventListener('DOMContentLoaded', function() {
-    loadDefaultData();
-    setupEventListeners();
+    loadData(CHART_DATA_1);
     setupResizeObserver();
 });
-
-function setupEventListeners() {
-    document.getElementById('defaultDatasetButton').addEventListener('click', loadDefaultData);
-}
 
 function setupResizeObserver() {
     const chartContainer = document.getElementById('chartContainer');
@@ -38,28 +33,25 @@ function setupResizeObserver() {
     });
 }
 
-function loadDefaultData() {
+function loadData(data) {
     try {
-        if (typeof DEFAULT_CHART_DATA !== 'undefined') {
-            chartData = DEFAULT_CHART_DATA;
+        if (typeof data !== 'undefined') {
+            chartData = data;
             processData();
             updateProcessorDisplay();
             updateTimestamp();
             document.querySelector('.layout-wrapper').style.display = 'flex';
         } else {
-            console.error('Default data not found. Make sure data.js is loaded.');
-            document.getElementById('defaultDatasetButton').textContent = 'No default data';
+            console.error('Data not found.');
         }
     } catch (error) {
-        console.error('Error loading default data:', error);
-        document.getElementById('defaultDatasetButton').textContent = 'No default data';
+        console.error('Error loading data:', error);
     }
 }
 
 function updateProcessorDisplay() {
     if (chartData && chartData.cpu) {
         currentProcessor = chartData.cpu.brand || 'Unknown CPU';
-        document.getElementById('defaultDatasetButton').textContent = currentProcessor;
         updateButtonStates('datasetButtons', currentProcessor);
     }
 }
@@ -102,10 +94,9 @@ function selectStyle(style) {
 function updateButtonStates(containerId, activeValue) {
     const container = document.getElementById(containerId);
     Array.from(container.children).forEach(button => {
+        button.classList.remove('active');
         if (button.textContent === activeValue) {
             button.classList.add('active');
-        } else {
-            button.classList.remove('active');
         }
     });
 }
