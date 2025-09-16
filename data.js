@@ -2361,7 +2361,7 @@ const CHART_DATA_1 = {
 };
 
 const CHART_DATA_2 = {
-    "updated": "2025-08-14",
+    "updated": "2025-09-14",
     "environment":{
         "os":"windows"
     },
