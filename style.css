@@ -105,11 +105,49 @@ button.active:hover {
     overflow: hidden;
 }
 
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    gap: 15px;
+}
+
 .chart-description {
     font-size: 14px;
     color: #ffffff;
-    margin-bottom: 10px;
     line-height: 1.4;
+    flex: 1;
+}
+
+.date-selector {
+    flex-shrink: 0;
+}
+
+.date-selector select {
+    padding: 10px 16px;
+    border: none;
+    background-color: #3a3a3a;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #e0e0e0;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23e0e0e0' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+}
+
+.date-selector select:hover {
+    background-color: #4a4a4a;
+}
+
+.date-selector select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(13, 115, 119, 0.5);
 }
 
 .chart-description a {
