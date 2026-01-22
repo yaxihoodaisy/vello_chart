@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
-    <script src="data.js"></script>
 </head>
 <body>
     <div class="container">
@@ -15,12 +14,9 @@
             <div id="controls" class="controls-container">
                 <div class="control-section">
                     <h3>Dataset</h3>
-                    <div id="datasetButtons" class="button-group">
-                        <button id="dataset1Button" class="active" onclick="loadData(CHART_DATA_1)">Apple M1 Pro</button>
-                        <button id="dataset2Button" onclick="loadData(CHART_DATA_2)">Intel(R) Core(TM) i9-14900K</button>
-                    </div>
+                    <div id="datasetButtons" class="button-group"></div>
                 </div>
-                
+
                 <div class="control-section">
                     <h3>Threading</h3>
                     <div id="threadingButtons" class="button-group">
@@ -28,17 +24,17 @@
                         <button onclick="selectThreading('MT')">Multi-Threaded</button>
                     </div>
                 </div>
-                
+
                 <div class="control-section">
                     <h3>Select Test</h3>
                     <div id="testButtons" class="button-group"></div>
                 </div>
-                
+
                 <div class="control-section">
                     <h3>Select Style</h3>
                     <div id="styleButtons" class="button-group"></div>
                 </div>
-                
+
                 <div class="control-section">
                     <h3>Metric</h3>
                     <div id="metricButtons" class="button-group">
@@ -47,17 +43,22 @@
                     </div>
                 </div>
             </div>
-            
+
             <div id="chartContainer" class="chart-container">
-                <div class="chart-description">
-                    This chart was generated using the Blend2D benchmark harness. For a description of what each test does, check out the <a href="https://blend2d.com/performance.html" target="_blank">official web page</a>.
+                <div class="chart-header">
+                    <div class="chart-description">
+                        This chart was generated using the Blend2D benchmark harness. For a description of what each test does, check out the <a href="https://blend2d.com/performance.html" target="_blank">official web page</a>.
+                    </div>
+                    <div class="date-selector">
+                        <select id="dateSelect" onchange="selectDate(this.value)"></select>
+                    </div>
                 </div>
                 <canvas id="performanceChart"></canvas>
                 <div class="chart-timestamp" id="updateTimestamp"></div>
             </div>
         </div>
     </div>
-    
+
     <script src="app.js"></script>
 </body>
 </html>
